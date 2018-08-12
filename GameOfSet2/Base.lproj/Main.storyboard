@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14112" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina5_9" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="GameOfSet2" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hte-5c-tj7">
+                                <rect key="frame" x="16" y="748" width="343" height="30"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score: 0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="1dE-K7-Kg4">
+                                        <rect key="frame" x="0.0" y="0.0" width="105.66666666666667" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="92A-3i-alN">
+                                        <rect key="frame" x="105.66666666666667" y="0.0" width="130.66666666666663" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="dOh-sj-Mk7"/>
+                                        </constraints>
+                                        <state key="normal" title="New Game"/>
+                                        <connections>
+                                            <action selector="newGameButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="MqF-cS-Zxh"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cards Left: 81" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="rNz-QZ-3BH">
+                                        <rect key="frame" x="236.33333333333334" y="0.0" width="106.66666666666666" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="92A-3i-alN" firstAttribute="centerX" secondItem="Hte-5c-tj7" secondAttribute="centerX" id="5Wb-Ea-7BY"/>
+                                    <constraint firstItem="rNz-QZ-3BH" firstAttribute="leading" secondItem="92A-3i-alN" secondAttribute="trailing" id="SG6-b9-pPh"/>
+                                    <constraint firstItem="92A-3i-alN" firstAttribute="leading" secondItem="1dE-K7-Kg4" secondAttribute="trailing" id="jBU-hT-l9z"/>
+                                </constraints>
+                            </stackView>
+                            <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="9oh-9r-CJG" customClass="SetCardView" customModule="GameOfSet2" customModuleProvider="target">
+                                <rect key="frame" x="16" y="60" width="343" height="668"/>
+                                <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="KHz-Jj-T4P" appends="YES" id="uRB-w5-wMc"/>
+                                </connections>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="9oh-9r-CJG" secondAttribute="trailing" constant="16" id="4fE-1T-XIO"/>
+                            <constraint firstItem="Hte-5c-tj7" firstAttribute="top" secondItem="9oh-9r-CJG" secondAttribute="bottom" constant="20" id="5L9-yU-7E7"/>
+                            <constraint firstItem="Hte-5c-tj7" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Im9-dH-c13"/>
+                            <constraint firstItem="9oh-9r-CJG" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Kvd-eV-ZmD"/>
+                            <constraint firstItem="9oh-9r-CJG" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="16" id="j2W-2i-GZ4"/>
+                            <constraint firstItem="Hte-5c-tj7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="q5u-Pn-stK"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Hte-5c-tj7" secondAttribute="bottom" id="tSh-CJ-2Lw"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="SetCardView" destination="9oh-9r-CJG" id="d28-rc-xf0"/>
+                        <outlet property="cardsLeftLabel" destination="rNz-QZ-3BH" id="MAY-vs-kfh"/>
+                        <outlet property="scoreLabel" destination="1dE-K7-Kg4" id="qAg-s2-Ca7"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="KHz-Jj-T4P">
+                    <connections>
+                        <action selector="changeCardSelection:" destination="BYZ-38-t0r" id="cS5-KZ-tKu"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="136.80000000000001" y="132.26600985221674"/>
+        </scene>
+    </scenes>
+</document>
