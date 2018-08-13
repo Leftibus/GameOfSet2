@@ -12,6 +12,15 @@ class ViewController: UIViewController {
 
     private var game = GameOfSet()
     
+    private var textSize: CGFloat {
+        get { return self.textSize }
+        set {
+            scoreLabel.font = scoreLabel.font.withSize(newValue)
+            cardsLeftLabel.font = cardsLeftLabel.font.withSize(newValue)
+            newGameButtonLabel.titleLabel?.font = newGameButtonLabel.titleLabel?.font.withSize(newValue)
+        }
+    }
+    
     @IBOutlet weak var SetCardView: SetCardView! {
         didSet {
             let swipe = UISwipeGestureRecognizer(target: self, action: #selector(dealOnSwipe))
@@ -22,6 +31,7 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBOutlet weak var newGameButtonLabel: UIButton!
     @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var cardsLeftLabel: UILabel!
     
@@ -43,7 +53,15 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Screen native scale: \(UIScreen.main.nativeScale); native bounds area: \(UIScreen.main.nativeBounds.area)")
+        
+        let screenWidth = UIScreen.main.nativeBounds.width
+        if screenWidth > 1242 {
+            textSize = 24.0
+        } else if screenWidth > 750 {
+            textSize = 17.0
+        } else {
+            textSize = 14.0
+        }
         startNewGame()
     }
     

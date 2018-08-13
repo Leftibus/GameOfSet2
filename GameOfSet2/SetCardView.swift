@@ -10,8 +10,6 @@ import UIKit
 
 class SetCardView: UIView {
     
-    //private let screenRatio = UIScreen.main.nativeBounds.area / 2740500.0
-    //private let screenRatio = UIScreen.main.scale / 3.0
     private let squiggleStartPoint = CGPoint(x: 1.05, y: 91.80)
     private let squigglePoints = [(to: CGPoint(x: 94.50, y: 19.80), controlPoint: CGPoint(x: -9.00, y: -13.50)),
                                (to: CGPoint(x: 175.50, y: 10.80), controlPoint: CGPoint(x: 147.91, y: 36.00)),
@@ -38,10 +36,12 @@ class SetCardView: UIView {
         var borderColor = UIColor.white
         grid = Grid(layout: Grid.Layout.aspectRatio(4/7), frame: rect)
         grid.cellCount = currentCardList.count
-
+        
+        // scale accounts for scaling when the device is landscape versus portrait
         let scale = grid[0]!.width / (rect.height > rect.width ? rect.width : rect.height)
         
         for index in 0..<currentCardList.count {
+            // inset each card so there is space between.
             insetFrame = grid[index]!.insetBy(dx: 20 * scale, dy: 20 * scale)
             let borderPath = UIBezierPath(roundedRect: insetFrame, cornerRadius: 40.0 * scale)
             guard let context = UIGraphicsGetCurrentContext() else { return }
@@ -90,16 +90,16 @@ class SetCardView: UIView {
         case .red:
             shapeColor = .red
         }
+
+        let cardGrid = Grid(layout: Grid.Layout.dimensions(rowCount: shapeCount, columnCount: 1), frame: area)
+        let shapeSizeScale = (0.7 * cardGrid[0]!.width) / 209.379
         
-        let countOffset = (shapeCount == 2) ? CGFloat(shapeCount) : CGFloat((shapeCount - 1) / 2)
-        let cardGrid = Grid(layout: Grid.Layout.dimensions(rowCount: shapeCount, columnCount: 1), frame: area.insetBy(dx: 0, dy: countOffset * 60 * scale))
-        
-        let transform = CGAffineTransform(scaleX: 0.8 * scale, y: 0.8 * scale)
+        let transform = CGAffineTransform(scaleX: shapeSizeScale, y: shapeSizeScale)
         
         for shapeIndex in 0..<shapeCount {
             
             // build shape path and bounds
-            insetShapeFrame = cardGrid[shapeIndex]!.insetBy(dx: 50 * scale, dy: 50 * scale)
+            insetShapeFrame = cardGrid[shapeIndex]!.insetBy(dx: 20 * scale, dy: 20 * scale)
             
             switch shapeType {
             case .squiggle:
@@ -107,7 +107,7 @@ class SetCardView: UIView {
             case .diamond:
                 shapePath = makeDiamondPath(frame: insetShapeFrame, shapeTransform: transform)
             case .oval:
-                shapePath = makeOvalPath(frame: insetShapeFrame, shapeTransform: transform, scale: scale)
+                shapePath = makeOvalPath(frame: insetShapeFrame, shapeTransform: transform, scale: shapeSizeScale)
             }
             
             // create shapepath for unique shape
@@ -191,34 +191,6 @@ class SetCardView: UIView {
             }
         }
         return nil
-    }
-    
-    func resizepath(Fitin frame : CGRect , path : CGPath) -> CGPath {
-        
-        let boundingBox = path.boundingBox
-        let boundingBoxAspectRatio = boundingBox.width / boundingBox.height
-        let viewAspectRatio = frame.width  / frame.height
-        var scaleFactor : CGFloat = 1.0
-        if (boundingBoxAspectRatio > viewAspectRatio) {
-            // Width is limiting factor
-            
-            scaleFactor = frame.width / boundingBox.width
-        } else {
-            // Height is limiting factor
-            scaleFactor = frame.height / boundingBox.height
-        }
-        
-        var scaleTransform = CGAffineTransform.identity
-        scaleTransform = scaleTransform.scaledBy(x: scaleFactor, y: scaleFactor)
-        scaleTransform.translatedBy(x: -boundingBox.minX, y: -boundingBox.minY)
-        
-        let scaledSize = boundingBox.size.applying(CGAffineTransform (scaleX: scaleFactor, y: scaleFactor))
-        let centerOffset = CGSize(width: (frame.width - scaledSize.width ) / scaleFactor * 2.0, height: (frame.height - scaledSize.height) /  scaleFactor * 2.0 )
-        scaleTransform = scaleTransform.translatedBy(x: centerOffset.width, y: centerOffset.height)
-        //CGPathCreateCopyByTransformingPath(path, &scaleTransform)
-        let  scaledPath = path.copy(using: &scaleTransform)
-        
-        return scaledPath!
     }
 }
 

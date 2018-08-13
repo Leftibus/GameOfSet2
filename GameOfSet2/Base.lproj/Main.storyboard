@@ -19,26 +19,27 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hte-5c-tj7">
-                                <rect key="frame" x="16" y="748" width="343" height="30"/>
+                                <rect key="frame" x="16" y="745" width="343" height="33"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score: 0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="1dE-K7-Kg4">
-                                        <rect key="frame" x="0.0" y="0.0" width="105.66666666666667" height="30"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="105.66666666666667" height="33"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="92A-3i-alN">
-                                        <rect key="frame" x="105.66666666666667" y="0.0" width="130.66666666666663" height="30"/>
+                                        <rect key="frame" x="105.66666666666667" y="0.0" width="130.66666666666663" height="33"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="85" id="dOh-sj-Mk7"/>
                                         </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <state key="normal" title="New Game"/>
                                         <connections>
                                             <action selector="newGameButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="MqF-cS-Zxh"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cards Left: 81" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="rNz-QZ-3BH">
-                                        <rect key="frame" x="236.33333333333334" y="0.0" width="106.66666666666666" height="30"/>
+                                        <rect key="frame" x="236.33333333333334" y="0.0" width="106.66666666666666" height="33"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -51,7 +52,7 @@
                                 </constraints>
                             </stackView>
                             <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="9oh-9r-CJG" customClass="SetCardView" customModule="GameOfSet2" customModuleProvider="target">
-                                <rect key="frame" x="16" y="60" width="343" height="668"/>
+                                <rect key="frame" x="16" y="60" width="343" height="665"/>
                                 <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <gestureRecognizers/>
                                 <connections>
@@ -74,6 +75,7 @@
                     <connections>
                         <outlet property="SetCardView" destination="9oh-9r-CJG" id="d28-rc-xf0"/>
                         <outlet property="cardsLeftLabel" destination="rNz-QZ-3BH" id="MAY-vs-kfh"/>
+                        <outlet property="newGameButtonLabel" destination="92A-3i-alN" id="5ek-YM-EjE"/>
                         <outlet property="scoreLabel" destination="1dE-K7-Kg4" id="qAg-s2-Ca7"/>
                     </connections>
                 </viewController>
