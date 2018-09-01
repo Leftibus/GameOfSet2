@@ -185,6 +185,7 @@ class SetCardView: UIView {
     }
     
     func checkCardTouch(touchPoint: CGPoint) -> Card? {
+        //TODO: can be removed once switch from card identification by point to id by view
         for index in 0..<currentCardList.count {
             if grid[index]!.contains(touchPoint) {
                 return currentCardList[index]

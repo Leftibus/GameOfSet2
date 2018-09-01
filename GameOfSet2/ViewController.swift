@@ -42,6 +42,7 @@ class ViewController: UIViewController {
     @IBAction func changeCardSelection(_ sender: UITapGestureRecognizer) {
         switch sender.state {
         case .ended:
+            //TODO: change the method for determining which card was touched from location
             let location: CGPoint = sender.location(in: SetCardView)
             if let touchedCard = SetCardView.checkCardTouch(touchPoint: location) {
                 SetCardView.changeCards(listOfCardstoDraw: game.changeSelection(touchedCard: touchedCard))
