@@ -11,6 +11,7 @@ import UIKit
 class ViewController: UIViewController {
 
     private var game = GameOfSet()
+    private var cardViewList = [SetCardView]()
     
     private var textSize: CGFloat {
         get { return self.textSize }
@@ -21,15 +22,18 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBOutlet weak var SetCardView: SetCardView! {
+    @IBOutlet weak var CardPlayArea: UIView! {
         didSet {
             let swipe = UISwipeGestureRecognizer(target: self, action: #selector(dealOnSwipe))
             swipe.direction = [.up, .down]
-            SetCardView.addGestureRecognizer(swipe)
+            CardPlayArea.addGestureRecognizer(swipe)
             let rotate = UIRotationGestureRecognizer(target: self, action: #selector(shuffleOnRotateGesture))
-            SetCardView.addGestureRecognizer(rotate)
+            CardPlayArea.addGestureRecognizer(rotate)
         }
     }
+    
+    lazy var cardPlayAreaBounds = CardPlayArea.bounds
+    lazy var grid = Grid(layout: Grid.Layout.aspectRatio(4/7), frame: cardPlayAreaBounds)
     
     @IBOutlet weak var newGameButtonLabel: UIButton!
     @IBOutlet weak var scoreLabel: UILabel!
@@ -39,17 +43,9 @@ class ViewController: UIViewController {
         startNewGame()
     }
     
-    @IBAction func changeCardSelection(_ sender: UITapGestureRecognizer) {
-        switch sender.state {
-        case .ended:
-            //TODO: change the method for determining which card was touched from location
-            let location: CGPoint = sender.location(in: SetCardView)
-            if let touchedCard = SetCardView.checkCardTouch(touchPoint: location) {
-                SetCardView.changeCards(listOfCardstoDraw: game.changeSelection(touchedCard: touchedCard))
-                updateViews()
-            }
-        default: break
-        }
+    override func viewDidLayoutSubviews() {
+        grid.frame = CGRect(origin: cardPlayAreaBounds.origin, size: CardPlayArea.frame.size)
+        updateViews()
     }
     
     override func viewDidLoad() {
@@ -67,19 +63,40 @@ class ViewController: UIViewController {
     }
     
     func startNewGame() {
-        game = GameOfSet()
         let startingCardCount = 12
+        game = GameOfSet()
+        grid.cellCount = startingCardCount
         dealCards(forCount: startingCardCount)
     }
     
     func updateViews() {
-        SetCardView.changeCards(listOfCardstoDraw: game.cardsInPlay)
+
+        while cardViewList.count != game.cardsInPlayCount {
+            if cardViewList.count < game.cardsInPlayCount {
+                let newCardView = SetCardView(frame: CGRect.zero)
+                CardPlayArea.addSubview(newCardView)
+                newCardView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.changeCardSelection(_ :))))
+                CardPlayArea.bringSubview(toFront: newCardView)
+                cardViewList.append(newCardView)
+            } else {
+                if let lastCardView = cardViewList.last {
+                    lastCardView.removeFromSuperview()
+                    cardViewList.removeLast()
+                }
+            }
+        }
+        
+        for index in 0..<game.cardsInPlayCount {
+            cardViewList[index].setCard(frame: grid[index]!, card: game.cardsInPlay[index])
+        }
+        
         scoreLabel.text = "Score: \(game.score)"
         cardsLeftLabel.text = "Cards Left: \(game.cardsLeft)"
     }
     
     func dealCards(forCount: Int) {
         game.dealCard(forCount: forCount)
+        grid.cellCount = game.cardsInPlayCount
         updateViews()
     }
     
@@ -90,6 +107,22 @@ class ViewController: UIViewController {
     @objc func shuffleOnRotateGesture() {
         game.shuffleCards()
         updateViews()
+    }
+    
+    @objc func changeCardSelection(_ recognizer: UITapGestureRecognizer) {
+        switch recognizer.state {
+            case .ended:
+                if let touchedCard = recognizer.view as? SetCardView {
+                    if let index = cardViewList.index(of: touchedCard) {
+                        game.changeSelection(touchedCard: game.cardsInPlay[index])
+                    } else {
+                        print("I couldn't find the card to select")
+                    }
+                    
+                    updateViews()
+                }
+            default: break
+        }
     }
 
 }

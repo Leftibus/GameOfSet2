@@ -18,6 +18,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OWh-23-uW4" userLabel="CardPlayAreaView">
+                                <rect key="frame" x="16" y="60" width="343" height="665"/>
+                                <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hte-5c-tj7">
                                 <rect key="frame" x="16" y="745" width="343" height="33"/>
                                 <subviews>
@@ -51,29 +55,21 @@
                                     <constraint firstItem="92A-3i-alN" firstAttribute="leading" secondItem="1dE-K7-Kg4" secondAttribute="trailing" id="jBU-hT-l9z"/>
                                 </constraints>
                             </stackView>
-                            <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="9oh-9r-CJG" customClass="SetCardView" customModule="GameOfSet2" customModuleProvider="target">
-                                <rect key="frame" x="16" y="60" width="343" height="665"/>
-                                <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <gestureRecognizers/>
-                                <connections>
-                                    <outletCollection property="gestureRecognizers" destination="KHz-Jj-T4P" appends="YES" id="uRB-w5-wMc"/>
-                                </connections>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="9oh-9r-CJG" secondAttribute="trailing" constant="16" id="4fE-1T-XIO"/>
-                            <constraint firstItem="Hte-5c-tj7" firstAttribute="top" secondItem="9oh-9r-CJG" secondAttribute="bottom" constant="20" id="5L9-yU-7E7"/>
                             <constraint firstItem="Hte-5c-tj7" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Im9-dH-c13"/>
-                            <constraint firstItem="9oh-9r-CJG" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Kvd-eV-ZmD"/>
-                            <constraint firstItem="9oh-9r-CJG" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="16" id="j2W-2i-GZ4"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="OWh-23-uW4" secondAttribute="trailing" constant="16" id="K4U-Ys-Rrf"/>
+                            <constraint firstItem="Hte-5c-tj7" firstAttribute="top" secondItem="OWh-23-uW4" secondAttribute="bottom" constant="20" id="Ybv-Xf-NtW"/>
+                            <constraint firstItem="OWh-23-uW4" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="ZfB-04-Q9w"/>
+                            <constraint firstItem="OWh-23-uW4" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="16" id="ifd-mA-lhl"/>
                             <constraint firstItem="Hte-5c-tj7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="q5u-Pn-stK"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Hte-5c-tj7" secondAttribute="bottom" id="tSh-CJ-2Lw"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="SetCardView" destination="9oh-9r-CJG" id="d28-rc-xf0"/>
+                        <outlet property="CardPlayArea" destination="OWh-23-uW4" id="w1U-hX-a9I"/>
                         <outlet property="cardsLeftLabel" destination="rNz-QZ-3BH" id="MAY-vs-kfh"/>
                         <outlet property="newGameButtonLabel" destination="92A-3i-alN" id="5ek-YM-EjE"/>
                         <outlet property="scoreLabel" destination="1dE-K7-Kg4" id="qAg-s2-Ca7"/>

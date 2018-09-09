@@ -10,6 +10,18 @@ import UIKit
 
 class SetCardView: UIView {
     
+    var currentCard: Card?
+    
+    init(frame: CGRect, card: Card? = nil) {
+        currentCard = card
+        super.init(frame: frame)
+        self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private let squiggleStartPoint = CGPoint(x: 1.05, y: 91.80)
     private let squigglePoints = [(to: CGPoint(x: 94.50, y: 19.80), controlPoint: CGPoint(x: -9.00, y: -13.50)),
                                (to: CGPoint(x: 175.50, y: 10.80), controlPoint: CGPoint(x: 147.91, y: 36.00)),
@@ -26,27 +38,24 @@ class SetCardView: UIView {
     private let ovalSize = CGSize(width: 209.38, height: 110.50)
     private let ovalCornerRadius: CGFloat = 40.0
     
-    private var currentCardList = [Card]()
-    
-    lazy var grid = Grid(layout: Grid.Layout.aspectRatio(4/7), frame: bounds)
-    
     override func draw(_ rect: CGRect) {
         
+        // draws all of the cards in play, which captures any changes to selection (including set checks)
+        // and to the number of cards in play
         var insetFrame: CGRect
         var borderColor = UIColor.white
-        grid = Grid(layout: Grid.Layout.aspectRatio(4/7), frame: rect)
-        grid.cellCount = currentCardList.count
+        let cardHolderView = superview?.frame
         
-        // scale accounts for scaling when the device is landscape versus portrait
-        let scale = grid[0]!.width / (rect.height > rect.width ? rect.width : rect.height)
-        
-        for index in 0..<currentCardList.count {
-            // inset each card so there is space between.
-            insetFrame = grid[index]!.insetBy(dx: 20 * scale, dy: 20 * scale)
+        if let cardToDraw = currentCard {
+            // scale accounts for scaling when the device is landscape versus portrait
+            let scale = rect.width / (cardHolderView!.height > cardHolderView!.width ? cardHolderView!.width : cardHolderView!.height)
+            
+            // inset card so there is space between.
+            insetFrame = rect.insetBy(dx: 20 * scale, dy: 20 * scale)
             let borderPath = UIBezierPath(roundedRect: insetFrame, cornerRadius: 40.0 * scale)
             guard let context = UIGraphicsGetCurrentContext() else { return }
 
-            switch currentCardList[index].cardMatchState {
+            switch cardToDraw.cardMatchState {
             case .unselected:
                 borderColor = .white
             case .selectedUnmatched:
@@ -69,20 +78,20 @@ class SetCardView: UIView {
             
             context.restoreGState()
             
-            drawCardShapes(area: insetFrame, scale: scale, card: currentCardList[index])
+            drawCardShapes(area: insetFrame, scale: scale)
         }
     }
     
-    func drawCardShapes(area: CGRect, scale: CGFloat, card: Card) {
+    func drawCardShapes(area: CGRect, scale: CGFloat) {
     
-        let shapeCount = card.numberOfSymbols
-        let shapeType = card.cardSymbols
-        let shapeFillType = card.shadingofSymbols
+        let shapeCount = currentCard!.numberOfSymbols
+        let shapeType = currentCard!.cardSymbols
+        let shapeFillType = currentCard!.shadingofSymbols
         var shapeColor: UIColor
         var shapePath: UIBezierPath
         var insetShapeFrame: CGRect
         
-        switch card.colorOfSymbols {
+        switch currentCard!.colorOfSymbols {
         case .green:
             shapeColor = .green
         case .purple:
@@ -177,21 +186,14 @@ class SetCardView: UIView {
         stripePath.stroke()
     }
     
-    func changeCards(listOfCardstoDraw: [Card]) {
-        currentCardList.removeAll()
-        currentCardList = listOfCardstoDraw
+    func updateCard() {
         setNeedsDisplay()
         setNeedsLayout()
     }
-    
-    func checkCardTouch(touchPoint: CGPoint) -> Card? {
-        //TODO: can be removed once switch from card identification by point to id by view
-        for index in 0..<currentCardList.count {
-            if grid[index]!.contains(touchPoint) {
-                return currentCardList[index]
-            }
-        }
-        return nil
+    func setCard(frame: CGRect, card: Card){
+        currentCard = card
+        self.frame = frame
+        updateCard()
     }
 }
 
