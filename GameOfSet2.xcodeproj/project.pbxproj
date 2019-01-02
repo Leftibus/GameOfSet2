@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B605FEFD2172A992001306E8 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605FEFC2172A992001306E8 /* RoundedButton.swift */; };
 		B61E9E37210DEB0700F4F53F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61E9E36210DEB0700F4F53F /* AppDelegate.swift */; };
 		B61E9E39210DEB0700F4F53F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61E9E38210DEB0700F4F53F /* ViewController.swift */; };
 		B61E9E3C210DEB0700F4F53F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B61E9E3A210DEB0700F4F53F /* Main.storyboard */; };
@@ -17,9 +18,12 @@
 		B61E9E4E210DF44D00F4F53F /* DeckOfCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61E9E4D210DF44D00F4F53F /* DeckOfCards.swift */; };
 		B61E9E50210DF47900F4F53F /* GameOfSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61E9E4F210DF47900F4F53F /* GameOfSet.swift */; };
 		B61E9E52210DF52700F4F53F /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61E9E51210DF52700F4F53F /* Grid.swift */; };
+		B6C3C92E21DBCD650015827C /* RoundedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C3C92D21DBCD650015827C /* RoundedLabel.swift */; };
+		B6C3C93021DBE2DF0015827C /* DiscardBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C3C92F21DBE2DF0015827C /* DiscardBehavior.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B605FEFC2172A992001306E8 /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
 		B61E9E33210DEB0700F4F53F /* GameOfSet2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameOfSet2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B61E9E36210DEB0700F4F53F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B61E9E38210DEB0700F4F53F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -32,6 +36,8 @@
 		B61E9E4D210DF44D00F4F53F /* DeckOfCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckOfCards.swift; sourceTree = "<group>"; };
 		B61E9E4F210DF47900F4F53F /* GameOfSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOfSet.swift; sourceTree = "<group>"; };
 		B61E9E51210DF52700F4F53F /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
+		B6C3C92D21DBCD650015827C /* RoundedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedLabel.swift; sourceTree = "<group>"; };
+		B6C3C92F21DBE2DF0015827C /* DiscardBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardBehavior.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +80,9 @@
 				B61E9E51210DF52700F4F53F /* Grid.swift */,
 				B61E9E3D210DEB0800F4F53F /* Assets.xcassets */,
 				B61E9E42210DEB0800F4F53F /* Info.plist */,
+				B605FEFC2172A992001306E8 /* RoundedButton.swift */,
+				B6C3C92D21DBCD650015827C /* RoundedLabel.swift */,
+				B6C3C92F21DBE2DF0015827C /* DiscardBehavior.swift */,
 			);
 			path = GameOfSet2;
 			sourceTree = "<group>";
@@ -119,6 +128,7 @@
 				TargetAttributes = {
 					B61E9E32210DEB0700F4F53F = {
 						CreatedOnToolsVersion = 9.4;
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -160,8 +170,11 @@
 			files = (
 				B61E9E4E210DF44D00F4F53F /* DeckOfCards.swift in Sources */,
 				B61E9E39210DEB0700F4F53F /* ViewController.swift in Sources */,
+				B6C3C92E21DBCD650015827C /* RoundedLabel.swift in Sources */,
 				B61E9E4A210DED3000F4F53F /* SetCardView.swift in Sources */,
+				B605FEFD2172A992001306E8 /* RoundedButton.swift in Sources */,
 				B61E9E37210DEB0700F4F53F /* AppDelegate.swift in Sources */,
+				B6C3C93021DBE2DF0015827C /* DiscardBehavior.swift in Sources */,
 				B61E9E4C210DF34800F4F53F /* Card.swift in Sources */,
 				B61E9E52210DF52700F4F53F /* Grid.swift in Sources */,
 				B61E9E50210DF47900F4F53F /* GameOfSet.swift in Sources */,
@@ -310,13 +323,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = GameOfSet2/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = kwojtas.edu.self.GameOfSet2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -327,13 +341,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = GameOfSet2/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = kwojtas.edu.self.GameOfSet2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
