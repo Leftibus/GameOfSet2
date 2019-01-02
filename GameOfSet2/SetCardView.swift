@@ -11,7 +11,7 @@ import UIKit
 class SetCardView: UIView {
     
     var currentCard: Card?
-    private var useableCardBox = CGRect()
+    private var useableCardBox = CGRect() // represents the rect that can be used for the shape, which is smaller than the grid rect provided
     private var okToDealIn = true
     private var endFrame = CGRect()
     private var showDelay = Double()
@@ -198,6 +198,8 @@ class SetCardView: UIView {
     }
     
     func makeDiamondPath(with centerY: CGFloat) -> UIBezierPath {
+        // use the cent
+        
         let shapePath = UIBezierPath()
         let diamondWidth = 0.8 * useableCardBox.width
         let diamondHeight = 0.5 * diamondWidth
@@ -260,9 +262,7 @@ private extension CGPoint {
     }
 }
 private extension CGRect {
-    var area: CGFloat {
-        return width * height
-    }
+    
     var center: CGPoint {
         get {
             return CGPoint(x: origin.x + (width / 2), y: origin.y + (height / 2))

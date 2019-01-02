@@ -64,7 +64,7 @@ struct GameOfSet {
         
     }
     
-    mutating func dicardFromCardsInPlay() {
+    mutating func removeFromCardsInPlay() {
         cardsInPlay = cardsInPlay.filter( {$0.cardMatchState != Card.matchState.goodMatch } )
         gameSetState = false
     }
