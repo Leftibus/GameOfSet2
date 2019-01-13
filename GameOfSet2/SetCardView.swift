@@ -10,20 +10,22 @@ import UIKit
 
 class SetCardView: UIView {
     
-    var currentCard: Card?
+    var currentCard: Card? // reflects the card data that will be displayed by the view.  View will only have one card in its life
     private var useableCardBox = CGRect() // represents the rect that can be used for the shape, which is smaller than the grid rect provided
-    private var okToDealIn = true
-    private var endFrame = CGRect()
-    private var showDelay = Double()
+    private var okToDealIn = true // flags the view to be animated during the first draw cycle.
+    private var cardFrame = CGRect() // property that reflects current designated frame of the card
+    private var showDelay = Double() // time lag after instantiation of view before deal animation starts
+    private var cardSizeScaleFactor = CGFloat()  // used to scale various aspects of the view depending on device rotation
     var isFaceUp = false
     private(set) var borderColor = UIColor()
     
-    init(startFrame: CGRect, endFrame: CGRect, showDelay: Double, card: Card? = nil) {
+    
+    init(startFrame: CGRect, targetFrame: CGRect, showDelay: Double, card: Card? = nil) {
         currentCard = card
         super.init(frame: startFrame)
-        self.transform = CGAffineTransform(rotationAngle: -0.5 * CGFloat.pi)
+        self.transform = CGAffineTransform(rotationAngle: -quarterTurn) // view starts -90 deg rotation to line up with deck
         self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 0)
-        self.endFrame = endFrame
+        self.cardFrame = targetFrame // location that the view will be animated to when it is instantiated
         self.showDelay = showDelay
     }
     
@@ -31,28 +33,19 @@ class SetCardView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let squiggleStartPoint = CGPoint(x: 1.05, y: 91.80)
-    private let squigglePoints = [(to: CGPoint(x: 94.50, y: 19.80), controlPoint: CGPoint(x: -9.00, y: -13.50)),
-                               (to: CGPoint(x: 175.50, y: 10.80), controlPoint: CGPoint(x: 147.91, y: 36.00)),
-                               (to: CGPoint(x: 208.65, y: 19.80), controlPoint: CGPoint(x: 198.00, y: -13.50)),
-                               (to: CGPoint(x: 115.20, y: 91.80), controlPoint: CGPoint(x: 218.70, y: 125.10)),
-                               (to: CGPoint(x: 34.20, y: 100.80), controlPoint: CGPoint(x: 62.69, y: 75.60)),
-                               (to: CGPoint(x: 1.05, y: 91.80), controlPoint: CGPoint(x: 11.70, y: 125.10))]
-    
     override func draw(_ rect: CGRect) {
         
-        // draws all of the cards in play, which captures any changes to selection (including set checks)
-        // and to the number of cards in play
+        // draws the card view based on the currentcard data
         
         var fillColor = UIColor()
         let cardHolderView = superview?.frame
         
-        // scale accounts for scaling when the device is landscape versus portrait
-        let scale = rect.width / (cardHolderView!.height > cardHolderView!.width ? cardHolderView!.width : cardHolderView!.height)
+        // scale accounts for scaling when the device is landscape versus portrait and for the size of the card
+        cardSizeScaleFactor = rect.width / (cardHolderView!.height > cardHolderView!.width ? cardHolderView!.width : cardHolderView!.height)
         
         // inset card so there is space between cards.
-        useableCardBox = rect.insetBy(dx: 0.05 * rect.width, dy: 0.05 * rect.width)
-        let borderPath = UIBezierPath(roundedRect: useableCardBox, cornerRadius: useableCardBox.width / 4)
+        useableCardBox = rect.insetBy(SizeRatio.spaceBetweenCards)
+        let borderPath = UIBezierPath(roundedRect: useableCardBox, cornerRadius: cornerRadius)
         
         if let cardToDraw = currentCard {
 
@@ -75,6 +68,7 @@ class SetCardView: UIView {
             
             guard let context = UIGraphicsGetCurrentContext() else { return }
             
+            // draw card face with rounded corners
             context.saveGState()
             borderPath.addClip()
             fillColor.setFill()
@@ -82,29 +76,29 @@ class SetCardView: UIView {
             
             //draw border based on cardMatchState
             borderColor.setStroke()
-            borderPath.lineWidth = 15.0 * scale
+            borderPath.lineWidth = cardBorderWidth
             borderPath.stroke()
             
             context.restoreGState()
             
-            if isFaceUp { drawCardShapes(area: useableCardBox, scale: scale) }
+            if isFaceUp { drawCardShapes(area: useableCardBox) } // only draws the card if it is faceup
             
         }
         
         if okToDealIn {
-            okToDealIn = false
+            okToDealIn = false // deal in only applies to first draw cycle, so flag is false for rest of view lifecycle.
             
             UIViewPropertyAnimator.runningPropertyAnimator(
-                withDuration: 0.6,
+                withDuration: Animation.dealSpeed,
                 delay: showDelay,
                 options: [.layoutSubviews],
                 animations: {
-                    self.transform = CGAffineTransform(rotationAngle: 1.0 * CGFloat.pi)
-                    self.frame = self.endFrame
+                    self.transform = CGAffineTransform(rotationAngle: 2 * self.quarterTurn)
+                    self.frame = self.cardFrame
             },
                 completion: { if $0 == .end {
                     UIView.transition(with: self,
-                                      duration: 1.0,
+                                      duration: Animation.cardFlipSpeed,
                                       options: [.transitionFlipFromLeft],
                                       animations: { self.isFaceUp = true
                                                     self.updateCard()
@@ -116,7 +110,7 @@ class SetCardView: UIView {
         }
     }
     
-    func drawCardShapes(area: CGRect, scale: CGFloat) {
+    func drawCardShapes(area: CGRect) {
     
         let shapeCount = currentCard!.numberOfSymbols
         let shapeType = currentCard!.cardSymbols
@@ -133,11 +127,11 @@ class SetCardView: UIView {
             shapeColor = .red
         }
         
-        let shapeDivider = useableCardBox.height / CGFloat(shapeCount + 1)
+        let shapeDivider = useableCardBox.height / CGFloat(shapeCount + 1) // calculates the height of the center line for the shape
         // build shape path and bounds
         for shapeIndex in 1...shapeCount {
             
-            let centerY = CGFloat(shapeIndex) * shapeDivider
+            let centerY = CGFloat(shapeIndex) * shapeDivider // sets the y based on standard height of divider and the shape number
             
             // create shapepath for unique shape
             switch shapeType {
@@ -154,12 +148,12 @@ class SetCardView: UIView {
             
             context.saveGState()
             shapeColor.setStroke()
-            shapePath.lineWidth = 10.0 * scale
+            shapePath.lineWidth = cardBorderWidth
             shapePath.addClip()
             
             switch shapeFillType {
             case .striped:
-                fillStripes(shapeBounds: shapePath.bounds, scale: scale)
+                fillStripes(shapeBounds: shapePath.bounds)
             case .closed:
                 shapeColor.setFill()
                 shapePath.fill()
@@ -174,25 +168,23 @@ class SetCardView: UIView {
     
     func makeSquigglePath(with centerY: CGFloat) -> UIBezierPath {
         let shapePath = UIBezierPath()
+        let transform = CGAffineTransform.identity
         
-        shapePath.move(to: squiggleStartPoint)
+        shapePath.move(to: Squiggle.start)
 
-        for curve in squigglePoints {
+        for curve in Squiggle.curvePoints {
             shapePath.addQuadCurve(to: curve.to, controlPoint: curve.controlPoint)
         }
-        let scale = (0.8 * useableCardBox.width) / shapePath.bounds.width
+        let sizeScaleFactor = shapeWidth / shapePath.bounds.width
         
-        let newTransform = CGAffineTransform(scaleX: scale, y: scale)
-        
-        shapePath.apply(newTransform)
+        shapePath.apply(transform.scaledBy(x: sizeScaleFactor, y: sizeScaleFactor)) // scale the size of the shapepath to fit the card
         
         let currentCenter = shapePath.bounds.center
-        let desiredCenter = CGPoint(x: useableCardBox.width / 2, y: centerY)
-        let deltaX = desiredCenter.x - currentCenter.x
-        let deltaY = desiredCenter.y - currentCenter.y
-        let newTranslation = CGAffineTransform(translationX: deltaX + useableCardBox.origin.x, y: deltaY + useableCardBox.origin.y)
+        let newCenter = CGPoint(x: useableCardBox.width.mid, y: centerY)
+        let newX = newCenter.x - currentCenter.x + useableCardBox.origin.x
+        let newY = newCenter.y - currentCenter.y + useableCardBox.origin.y
         
-        shapePath.apply(newTranslation)
+        shapePath.apply(transform.translatedBy(x: newX, y: newY)) // move the shape to the cente rof the useable card area
         
         return shapePath
     }
@@ -201,35 +193,33 @@ class SetCardView: UIView {
         // use the cent
         
         let shapePath = UIBezierPath()
-        let diamondWidth = 0.8 * useableCardBox.width
-        let diamondHeight = 0.5 * diamondWidth
-        let newCenter = useableCardBox.origin.add(CGPoint(x: useableCardBox.width/2, y: centerY))
+
+        let newCenter = useableCardBox.origin.add(CGPoint(x: useableCardBox.width.mid, y: centerY))
         
-        shapePath.move(to: newCenter.add(CGPoint(x: -diamondWidth/2, y: 0)))
-        shapePath.addLine(to: newCenter.add(CGPoint(x: 0, y: -diamondHeight/2)))
-        shapePath.addLine(to: newCenter.add(CGPoint(x: diamondWidth/2, y: 0)))
-        shapePath.addLine(to: newCenter.add(CGPoint(x: 0, y: diamondHeight/2)))
+        shapePath.move(to: newCenter.add(CGPoint(x: -shapeWidth.mid, y: 0)))
+        shapePath.addLine(to: newCenter.add(CGPoint(x: 0, y: -shapeHeight.mid)))
+        shapePath.addLine(to: newCenter.add(CGPoint(x: shapeWidth.mid, y: 0)))
+        shapePath.addLine(to: newCenter.add(CGPoint(x: 0, y: shapeHeight.mid)))
         shapePath.close()
         
         return shapePath
     }
     
     func makeOvalPath(with centerY: CGFloat) -> UIBezierPath {
-        let ovalWidth = 0.8 * useableCardBox.width
-        let ovalHeight = 0.5 * ovalWidth
-        let newOrigin = useableCardBox.origin.add(CGPoint(x: 0.1 * useableCardBox.width, y: centerY - ovalHeight/2))
-        let ovalRect = CGRect(x: newOrigin.x, y: newOrigin.y, width: ovalWidth, height: ovalHeight)
         
-        return UIBezierPath(roundedRect: ovalRect, cornerRadius: ovalHeight / 2)
+        let newOrigin = useableCardBox.origin.add(CGPoint(x: shapeInset, y: centerY - shapeHeight.mid))
+        let ovalRect = CGRect(x: newOrigin.x, y: newOrigin.y, width: shapeWidth, height: shapeHeight)
+        
+        return UIBezierPath(roundedRect: ovalRect, cornerRadius: cornerRadius)
     }
     
-    func fillStripes(shapeBounds: CGRect, scale: CGFloat) {
+    func fillStripes(shapeBounds: CGRect) {
         let stripePath = UIBezierPath()
-        for yPos in stride(from: CGFloat(shapeBounds.origin.y), through: shapeBounds.origin.y + shapeBounds.height, by: 15.0 * scale) {
+        for yPos in stride(from: CGFloat(shapeBounds.origin.y), through: shapeBounds.origin.y + shapeBounds.height, by: stripeSpaceWidth) {
             stripePath.move(to: CGPoint(x: shapeBounds.origin.x, y: yPos))
             stripePath.addLine(to: CGPoint(x: shapeBounds.origin.x + shapeBounds.size.width, y: yPos))
         }
-        stripePath.lineWidth = 3.0 * scale
+        stripePath.lineWidth = stripeWidth
         stripePath.stroke()
     }
     
@@ -240,17 +230,24 @@ class SetCardView: UIView {
     func setCard(frame: CGRect, card: Card){
         currentCard = card
        
-        if self.endFrame != frame {
+        if self.cardFrame != frame {
             UIViewPropertyAnimator.runningPropertyAnimator(
-                withDuration: 1.0,
+                withDuration: Animation.resizeSpeed,
                 delay: 0.0,
                 options: [.layoutSubviews],
                 animations: { self.frame = frame },
                 completion: nil )
         }
-        self.endFrame = frame
+        self.cardFrame = frame
          superview!.sendSubviewToBack(self)
         updateCard()
+    }
+}
+
+private extension CGFloat {
+    
+    var mid: CGFloat {
+        return self / 2
     }
 }
 
@@ -265,10 +262,84 @@ private extension CGRect {
     
     var center: CGPoint {
         get {
-            return CGPoint(x: origin.x + (width / 2), y: origin.y + (height / 2))
+            return CGPoint(x: origin.x + (width.mid), y: origin.y + (height.mid))
         }
         set {
-            origin = CGPoint(x: center.x - (width / 2), y: center.y - (height / 2))
+            origin = CGPoint(x: center.x - (width.mid), y: center.y - (height.mid))
         }
     }
+}
+
+private extension CGRect {
+    func insetBy(_ widthFactor: CGFloat) -> CGRect {
+        let insetSpace = widthFactor * self.width
+        return self.insetBy(dx: insetSpace, dy: insetSpace)
+    }
+}
+
+extension SetCardView {
+    private struct Squiggle {
+        static let start = CGPoint(x: 1.05, y: 91.80)
+        static let curvePoints = [(to: CGPoint(x: 94.50, y: 19.80), controlPoint: CGPoint(x: -9.00, y: -13.50)),
+                              (to: CGPoint(x: 175.50, y: 10.80), controlPoint: CGPoint(x: 147.91, y: 36.00)),
+                              (to: CGPoint(x: 208.65, y: 19.80), controlPoint: CGPoint(x: 198.00, y: -13.50)),
+                              (to: CGPoint(x: 115.20, y: 91.80), controlPoint: CGPoint(x: 218.70, y: 125.10)),
+                              (to: CGPoint(x: 34.20, y: 100.80), controlPoint: CGPoint(x: 62.69, y: 75.60)),
+                              (to: CGPoint(x: 1.05, y: 91.80), controlPoint: CGPoint(x: 11.70, y: 125.10))]
+    }
+    
+    private struct SizeRatio {
+        static let percentShapeWidth: CGFloat = 0.8
+        static let percentShapeHeightToShapeWidth: CGFloat = 0.5
+        static let percentShapeInset: CGFloat = (1 - SizeRatio.percentShapeWidth) / 2
+        static let cardBorderWeight: CGFloat = 15.0
+        static let stripeWeight: CGFloat = 5.0
+        static let stripeSpaceWeight: CGFloat = 20.0
+        static let shapeBorderWeight: CGFloat = 10.0
+        static let corner: CGFloat = 4.0
+        static let spaceBetweenCards: CGFloat = 0.05
+    }
+    
+    private struct Animation {
+        static let dealSpeed: Double = 0.6
+        static let resizeSpeed: Double = 1.0
+        static let cardFlipSpeed: Double = 1.0
+    }
+    
+    private var quarterTurn: CGFloat {
+        return 0.5 * CGFloat.pi // quarter turn is 1/4 of 2 * pi
+    }
+    
+    private var shapeWidth: CGFloat {
+        return SizeRatio.percentShapeWidth * useableCardBox.width
+    }
+    
+    private var shapeInset: CGFloat {
+        return SizeRatio.percentShapeInset * useableCardBox.width
+    }
+    
+    private var shapeHeight: CGFloat {
+        return SizeRatio.percentShapeHeightToShapeWidth * shapeWidth
+    }
+    
+    private var stripeWidth: CGFloat {
+        return SizeRatio.stripeWeight * cardSizeScaleFactor
+    }
+    
+    private var stripeSpaceWidth: CGFloat {
+        return SizeRatio.stripeSpaceWeight * cardSizeScaleFactor
+    }
+    
+    private var cardBorderWidth: CGFloat {
+        return SizeRatio.cardBorderWeight * cardSizeScaleFactor
+    }
+    
+    private var shapeBorderWidth: CGFloat {
+        return SizeRatio.shapeBorderWeight * cardSizeScaleFactor
+    }
+    
+    private var cornerRadius: CGFloat {
+        return useableCardBox.width / SizeRatio.corner
+    }
+    
 }

@@ -144,7 +144,7 @@ class ViewController: UIViewController {
             
             for index in nextNewCardIndex..<lastNewCardIndex {
                 
-                let newCardView = SetCardView(startFrame: startingFrame, endFrame: grid[index]!, showDelay: animationDelay)
+                let newCardView = SetCardView(startFrame: startingFrame, targetFrame: grid[index]!, showDelay: animationDelay)
                 newCardView.center = buttonFrame.center
                 
                 CardPlayArea.addSubview(newCardView) // add new card view to the superview (cardPlay Area)
