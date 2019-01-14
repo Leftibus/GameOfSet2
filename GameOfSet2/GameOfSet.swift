@@ -129,6 +129,7 @@ struct GameOfSet {
     // if 3 cards are selected return true if it is a valid set
     // if 3 cards are selected return false if it is an invalid set.
     func isSet() -> Bool? {
+        
         if selectedCards.count == 3 {
             var symbols = [Card.CardSymbols]()
             var numbers = [Int]()
@@ -142,6 +143,8 @@ struct GameOfSet {
                 shading.append(card.shadingofSymbols)
             }
             
+            // checks each array of the card subtypes
+            // if two out of the three subtypes match, then it is a "bad match"
             if symbols.twoOfThree() {
                 return false
             } else if numbers.twoOfThree() {
@@ -158,6 +161,12 @@ struct GameOfSet {
 }
 
 extension Array where Element : Hashable {
+    
+    // when this function is called, there will be three elements in the array
+    // function checks if two out of the three elements are a match
+    // this is done by converting the array into a Set which removes any duplicates
+    // if there are no duplicates (all different) count of elements in set is 3
+    // if all three elements match (all same), count oif elements in set is 1
     func twoOfThree() -> Bool {
         return Set(self).count == 2
     }

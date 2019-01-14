@@ -23,21 +23,11 @@ class ViewController: UIViewController {
     
     lazy var discardBehavior = DiscardBehavior(in: discardAnimator)
     
-    // property that reflects the textSize to be used based on the device/screen size being used
-    private var textSize: CGFloat = 14.0 {
-        
-        willSet { //  using willSet since we don't need a getter.
-            // updates the textsize of all labels to reflect screen size of the device in use
-            scoreLabel.font = scoreLabel.font.withSize(newValue)
-            newGameButtonLabel.titleLabel?.font = newGameButtonLabel.titleLabel?.font.withSize(newValue)
-            dealCardsButton.titleLabel?.font = dealCardsButton.titleLabel?.font.withSize(newValue)
-        }
-    }
-    
     @IBOutlet weak var CardPlayArea: UIView! // view that represents all of the cards in play
     
     lazy var cardPlayAreaBounds = CardPlayArea.bounds
-    lazy var grid = Grid(layout: Grid.Layout.aspectRatio(4/7), frame: cardPlayAreaBounds)  // subdivides the play area into frames
+    // subdivides the play area into frames
+    lazy var grid = Grid(layout: Grid.Layout.aspectRatio(SizeConst.aspectRatio), frame: cardPlayAreaBounds)
     
     @IBOutlet weak var newGameButtonLabel: UIButton!
     @IBOutlet weak var scoreLabel: UILabel!
@@ -63,18 +53,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //TODO: group and move "magic numbers" to end of code
-        // checks the screen width of the device and adjusts textsize to compensate
-        let screenWidth = UIScreen.main.nativeBounds.width
-        if screenWidth > 1242 {
-            self.textSize = 24.0
-        } else if screenWidth > 750 {
-            self.textSize = 17.0
-        } else {
-            self.textSize = 14.0
-        }
+        // adjusts textsize to compensate for the device screen width
+        let fontSize = scaledFontSize
+        scoreLabel.font = scoreLabel.font.withSize(fontSize)
+        newGameButtonLabel.titleLabel?.font = newGameButtonLabel.titleLabel?.font.withSize(fontSize)
+        dealCardsButton.titleLabel?.font = dealCardsButton.titleLabel?.font.withSize(fontSize)
         
-        scoreLabel.layer.borderWidth = 1
+        scoreLabel.layer.borderWidth = SizeConst.labelBorderWidth
         scoreLabel.layer.borderColor = UIColor.black.cgColor
         dealCardsButton.isEnabled = false
         dealCardsButton.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
@@ -91,12 +76,11 @@ class ViewController: UIViewController {
     
     func startNewGame() {
         
-        let startingCardCount = 12
         CardPlayArea.subviews.forEach { $0.removeFromSuperview() }
         cardViewList.removeAll()
         dealCardsButton.backgroundColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
         game = GameOfSet()
-        dealCards(forCount: startingCardCount)
+        dealCards(forCount: CardCount.start)
     }
     
     func updateViews() {
@@ -113,7 +97,7 @@ class ViewController: UIViewController {
     }
     
     // called when cards need to be added and/or when cards to be removed from the play area after a match is found
-    @objc func dealCards(forCount: Int = 3) {
+    @objc func dealCards(forCount: Int = CardCount.deal) {
         
         // identify cards to be discarded
         
@@ -152,7 +136,7 @@ class ViewController: UIViewController {
                 
                 newCardView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.changeCardSelection(_ :))))
                 
-                animationDelay += 0.2
+                animationDelay += TimeConst.dealDelay
             }
         }
         
@@ -173,7 +157,7 @@ class ViewController: UIViewController {
         
         let selector = #selector(sendToDiscardPile(timer:))
         // timer is used to delay the aniimation which sends the view to discard pile.
-        discardTimer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: selector, userInfo: cardsToDiscardViewList, repeats: false)
+        discardTimer = Timer.scheduledTimer(timeInterval: TimeConst.bounceDuration, target: self, selector: selector, userInfo: cardsToDiscardViewList, repeats: false)
         cardViewList = cardViewList.filter({$0.borderColor != UIColor.green}) // remove the matched views from the list of displayed views
         grid.cellCount = cardViewList.count // change the grid to reflect that there are now fewer card views to be displayed
         updateViews()
@@ -190,19 +174,19 @@ class ViewController: UIViewController {
         for cardView in discardedViews {
             
             UIViewPropertyAnimator.runningPropertyAnimator(
-                withDuration: 0.6,
+                withDuration: TimeConst.discardDuration,
                 delay: 0.0,
                 options: [.layoutSubviews],
                 animations: {
                     // animate the movement and resize of the cardView to match the discard pile
                     self.discardBehavior.removeItem(cardView)
-                    cardView.transform = CGAffineTransform(rotationAngle: 0.5 * CGFloat.pi)
+                    cardView.transform = CGAffineTransform(rotationAngle: self.quarterTurn)
                     cardView.frame = discardPileFrame
             },
                 // flip the card over once it reaches the discard pile
                 completion: { if $0 == .end {
                     UIView.transition(with: cardView,
-                                      duration: 1.0,
+                                      duration: TimeConst.discardDuration,
                                       options: [.transitionFlipFromLeft],
                                       animations: { cardView.isFaceUp = false
                                         cardView.updateCard()
@@ -235,6 +219,50 @@ class ViewController: UIViewController {
         }
     }
 
+}
+
+// ViewController Constants
+extension ViewController {
+    
+    // number of cards to deal
+    private struct CardCount {
+        
+        static let start = 12 // cards to deal when new game starts
+        static let deal = 3 // cards to deal for rest of game (after deal button, after match found)
+    }
+    
+    // Sizes
+    private struct SizeConst {
+        
+        static let aspectRatio: CGFloat = 4 / 7 // used for grid that contains each card in the playing area
+        static let labelBorderWidth: CGFloat = 1.0 // score label border width
+    }
+    
+    // Animation Timing Constants
+    private struct TimeConst {
+        
+        static let dealDelay = 0.2  // animation delay between the deal of each card
+        static let flipDuration = 1.0  // Duration of flip card animation
+        static let discardDuration = 0.6  // duration of animation to send card to deck
+        static let bounceDuration = 2.0  // duration of card bounce after a match
+    }
+    
+    // property that reflects the textSize to be used based on the device/screen size being used
+    private var scaledFontSize: CGFloat {
+        
+        switch UIScreen.main.nativeBounds.width {
+        case 0..<750: // small screen such as iPhone 7+ and earlier
+            return 14.0
+        case 750...1242: // medium size screen such as iPhone 8 to iPhone XS Max
+            return 17.0
+        default: // large screen size - ipads
+            return 24.0
+        }
+    }
+    
+    private var quarterTurn: CGFloat {
+        return 0.5 * CGFloat.pi // quarter turn is 1/4 of 2 * pi
+    }
 }
 
 // extends CGRect to add property for the center coordinates of the rectangle
