@@ -5,38 +5,45 @@
 //  Created by Kevin Wojtas on 7/29/18.
 //  Copyright © 2018 Kevin Wojtas. All rights reserved.
 //
+// GameOfSet is the model representing the game logic.  There should be only one model per game
+//
 
 import Foundation
 
 struct GameOfSet {
     
     private(set) var deck = DeckOfCards().allCards
-    private(set) var cardsInPlay = [Card]()
-    private(set) var matchedCards = [Card]()
-    private(set) var gameSetState = false
+    private(set) var cardsInPlay = [Card]() // represents all cards that are playable by the user
+    private(set) var gameSetState = false // flag used to track if a set was previously detected while user selects the 4th card
     private(set) var score = 0
     var cardsLeft: Int { get { return deck.count } }
     var cardsInPlayCount: Int { get { return cardsInPlay.count} }
-    var gameDealType = dealType.deal
+    var okToDeal = false // determines whether conditions are met to start dealing cards
     
     private(set) var selectedCards = [Card]() {
         didSet {
                 
-            if selectedCards.count > 0 {
+            if selectedCards.count > 0 { // there is at least one card selected
                 
+                // list of cards that are selected but a bad match.
+                // this will always contain 0 or 3 cards since cards can only be marked as a bad match if there are 3 of them.
                 let unmatchedCards = cardsInPlay.filter( { $0.cardMatchState == Card.matchState.badMatch} )
                 
-                if unmatchedCards.count > 0 {
+                if unmatchedCards.count > 0 { // unselect all of the bad match cards
                     for eachCard in unmatchedCards {
                         cardsInPlay[cardsInPlay.index(of: eachCard)!].cardMatchState = Card.matchState.unselected
                     }
                 }
                 
-                if let setState = isSet() { // setState is true if there is a set, false if there is a not a set, and null if not enough cards selected.
+                if let setState = isSet() { // true only if there are three cards selected.
+                    
+                    // update the card selection to relfect whether the cards are a set or not.
                     for eachCard in selectedCards {
                         cardsInPlay[cardsInPlay.index(of: eachCard)!].cardMatchState = setState ? Card.matchState.goodMatch : Card.matchState.badMatch
                     }
-                    selectedCards.removeAll()
+                    selectedCards.removeAll() // empties selected cards list since they are all marked as good or bad match
+                    // keep track that there is a currently marked group of cards that are good or bad match.
+                    // this is needed since selected cards is now empty so we can't rely on isSet to knoiw that there is a group of three cards taht are a good or bad match
                     gameSetState = setState
                     score += setState ? 5 : -5 // update the score based on valid or invalid set
                 }
@@ -44,22 +51,15 @@ struct GameOfSet {
         }
     }
     
-    enum dealType {
-        case hold
-        case deal
-        case replace
-        case discard
-    }
-    
     // deals number of cards as specified in forCount
     mutating func deal(forCount: Int) {
-        if cardsLeft > 0 { // there are still cards in the deck, so 3 new cards can be drawn
+        if cardsLeft >= 3 { // there are still at least 3 cards in the deck, so 3 new cards can be drawn
             for _ in 0..<forCount {
                 let drawnCard = deck.remove(at: deck.count.arc4random) // draw card from the deck
                 cardsInPlay.append(drawnCard)
             }
         }
-        gameDealType = .hold
+        okToDeal = false
         gameSetState = false
         
     }
@@ -69,13 +69,14 @@ struct GameOfSet {
         gameSetState = false
     }
     
+    // return the index of a Card within the cardsInPlay
     func getCardIndex(thisCard: Card) -> Int {
         
         return cardsInPlay.index(of: thisCard)!
     }
     
     // receives a Card, checks for set, then changes selection states based on the outcome
-    mutating func changeSelection(indexOfTouchedCard: Int) -> dealType {
+    mutating func changeSelection(indexOfTouchedCard: Int) -> Bool {
         
         // update gameState if three cards are already selected and new card is touched
         if let setState = isSet() { // three cards are selected, but may or may not be a set
@@ -90,28 +91,23 @@ struct GameOfSet {
         }
         
         // invert the selection status of the touched card
-        
         switch cardsInPlay[indexOfTouchedCard].cardMatchState {
+            
             case .selectedUnmatched:
-                selectedCards = selectedCards.filter( { $0 != cardsInPlay[indexOfTouchedCard] } )
-                cardsInPlay[indexOfTouchedCard].cardMatchState = .unselected
+                selectedCards = selectedCards.filter( { $0 != cardsInPlay[indexOfTouchedCard] } ) // remove the card from selected
+                cardsInPlay[indexOfTouchedCard].cardMatchState = .unselected // change card property to unselected
             
             case .unselected:
-                cardsInPlay[indexOfTouchedCard].cardMatchState = .selectedUnmatched
+                cardsInPlay[indexOfTouchedCard].cardMatchState = .selectedUnmatched // select the card
                 
-                if gameSetState {
-                    gameDealType = .deal
-                } else {
-                    gameDealType = .hold
-                }
-                
-                selectedCards.append(cardsInPlay[indexOfTouchedCard])
+                // check if a set was determined before the current card was selected.  if so, it's time to deal
+                okToDeal = gameSetState
+                selectedCards.append(cardsInPlay[indexOfTouchedCard]) // add card to selected cards
             
             default:
                 break
         }
-        
-        return gameDealType
+        return okToDeal // indicate whether conditions are rigyt to deal
     }
     
     mutating func shuffleCards() {

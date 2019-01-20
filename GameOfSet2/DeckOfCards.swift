@@ -6,12 +6,15 @@
 //  Copyright © 2018 Kevin Wojtas. All rights reserved.
 //
 
+// DeckOfCards holds the complete deck of cards.  There should be one deck of cards per game.
+
 import Foundation
 
 struct DeckOfCards {
     
     var allCards = [Card]()
     
+    // loops through all options of symbols, count, shading and color to create the deck
     init() {
         for numberOfSymbols in 1...3 {
             

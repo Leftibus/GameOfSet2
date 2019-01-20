@@ -26,7 +26,7 @@ class SetCardView: UIView {
         self.transform = CGAffineTransform(rotationAngle: -quarterTurn) // view starts -90 deg rotation to line up with deck
         self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 0)
         self.cardFrame = targetFrame // location that the view will be animated to when it is instantiated
-        self.showDelay = showDelay
+        self.showDelay = showDelay // time delay before the card animates on the screen so that cards dont all deal simultaneously
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -45,12 +45,13 @@ class SetCardView: UIView {
         
         // inset card so there is space between cards.
         useableCardBox = rect.insetBy(SizeRatio.spaceBetweenCards)
-        let borderPath = UIBezierPath(roundedRect: useableCardBox, cornerRadius: cornerRadius)
+        let borderPath = UIBezierPath(roundedRect: useableCardBox, cornerRadius: cornerRadius) // creates a rounded card border
         
         if let cardToDraw = currentCard {
 
+            // sets border color based upon the match state of the card
             if isFaceUp {
-                fillColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+                fillColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0) // face of card is white
                 switch cardToDraw.cardMatchState {
                 case .unselected:
                     borderColor = .white
@@ -62,10 +63,11 @@ class SetCardView: UIView {
                     borderColor = .green
                 }
             } else {
-                fillColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
+                fillColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1) // back of card is orange
                 borderColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
             }
             
+            // get the current context so that the shapes can be overlaid on the card
             guard let context = UIGraphicsGetCurrentContext() else { return }
             
             // draw card face with rounded corners
@@ -81,13 +83,15 @@ class SetCardView: UIView {
             
             context.restoreGState()
             
-            if isFaceUp { drawCardShapes(area: useableCardBox) } // only draws the card if it is faceup
+            if isFaceUp { drawCardShapes(area: useableCardBox) } // only draws the card shapes if the card is faceup
             
         }
         
         if okToDealIn {
             okToDealIn = false // deal in only applies to first draw cycle, so flag is false for rest of view lifecycle.
             
+            // animation to deal the move the card from gthe deck location to the card play area.
+            // after card reaches intended location in card play area, animation runs to flip card over
             UIViewPropertyAnimator.runningPropertyAnimator(
                 withDuration: Animation.dealSpeed,
                 delay: showDelay,
@@ -110,6 +114,7 @@ class SetCardView: UIView {
         }
     }
     
+    // draws the card shapes based on the properties in the associated card
     func drawCardShapes(area: CGRect) {
     
         let shapeCount = currentCard!.numberOfSymbols
@@ -118,6 +123,7 @@ class SetCardView: UIView {
         var shapeColor: UIColor
         var shapePath: UIBezierPath
         
+        // set the color of the shapes
         switch currentCard!.colorOfSymbols {
         case .green:
             shapeColor = .green
@@ -223,13 +229,17 @@ class SetCardView: UIView {
         stripePath.stroke()
     }
     
+    // update views to reflect any changes
     func updateCard() {
         setNeedsDisplay()
         setNeedsLayout()
     }
+    
+    // set the card that is associated with the view and to update the view based on changes in the viewcontroller
     func setCard(frame: CGRect, card: Card){
         currentCard = card
-       
+        
+        // check if the location and/or size have changed from current, if so animate to the new size/location
         if self.cardFrame != frame {
             UIViewPropertyAnimator.runningPropertyAnimator(
                 withDuration: Animation.resizeSpeed,
@@ -238,8 +248,7 @@ class SetCardView: UIView {
                 animations: { self.frame = frame },
                 completion: nil )
         }
-        self.cardFrame = frame
-         superview!.sendSubviewToBack(self)
+        superview!.sendSubviewToBack(self) // moves to the back layer so that anhy cards that are dealt or discarded will be on top
         updateCard()
     }
 }
@@ -251,6 +260,7 @@ private extension CGFloat {
     }
 }
 
+// create ability to combine two CGPoints
 private extension CGPoint {
     func add(_ second: CGPoint) -> CGPoint {
         let newX = self.x + second.x
@@ -258,6 +268,8 @@ private extension CGPoint {
         return CGPoint(x: newX, y: newY)
     }
 }
+
+
 private extension CGRect {
     
     var center: CGPoint {

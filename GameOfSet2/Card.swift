@@ -11,7 +11,7 @@
 //  - Color of Symbol
 //  - Shading of Symbol
 //
-//  Card conforms to Hashable and Equatable protocols so that the cards can be 
+
 
 import Foundation
 
@@ -32,7 +32,7 @@ struct Card: Hashable {
     private (set) var shadingofSymbols: ShadingOfSymbols
     private (set) var colorOfSymbols: ColorOfSymbols
     
-    // indicates whether the selection status of card, if unmatched and match status if card is one of three selected cards
+    // indicate the selection status of card, if unmatched and match status if card is one of three selected cards
     enum matchState {
         case unselected
         case selectedUnmatched
@@ -48,6 +48,7 @@ struct Card: Hashable {
         
         static var all = [CardSymbols.oval, .squiggle, .diamond]
     }
+    
     enum ShadingOfSymbols {
         case open
         case striped

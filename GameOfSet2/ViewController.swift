@@ -206,7 +206,7 @@ class ViewController: UIViewController {
                 if let touchedCard = recognizer.view as? SetCardView { // identifies which card bview was touched
                     if let index = cardViewList.index(of: touchedCard) { // get the index of the touhced card in the cardview list
                     
-                        if game.changeSelection(indexOfTouchedCard: index) == .deal { // model indicates that it is time to deal cards
+                        if game.changeSelection(indexOfTouchedCard: index) { // model indicates that it is time to deal cards
                             dealCards()
                         } else { // no cards need to be dealt, but the views need to be updated based on any changes to selection status
                             updateViews()
@@ -218,7 +218,6 @@ class ViewController: UIViewController {
             default: break
         }
     }
-
 }
 
 // ViewController Constants
