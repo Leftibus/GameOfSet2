@@ -5,6 +5,8 @@
 //  Created by Kevin Wojtas on 1/1/19.
 //  Copyright © 2019 Kevin Wojtas. All rights reserved.
 //
+// class that contains all of the relevant dynamic animation code
+// to keep the viewcontroller clean
 
 import UIKit
 

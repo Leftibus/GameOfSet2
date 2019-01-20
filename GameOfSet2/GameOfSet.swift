@@ -132,6 +132,7 @@ struct GameOfSet {
             var colors = [Card.ColorOfSymbols]()
             var shading = [Card.ShadingOfSymbols]()
             
+            // create a list for each attribute of the card so they can be compared
             for card in selectedCards {
                 symbols.append(card.cardSymbols)
                 numbers.append(card.numberOfSymbols)

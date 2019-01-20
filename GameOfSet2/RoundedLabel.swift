@@ -5,6 +5,7 @@
 //  Created by Kevin Wojtas on 1/1/19.
 //  Copyright © 2019 Kevin Wojtas. All rights reserved.
 //
+// custome view for the discard pile label to make rounded corners
 
 import UIKit
 

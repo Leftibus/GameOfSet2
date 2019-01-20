@@ -78,11 +78,11 @@
 				B61E9E4D210DF44D00F4F53F /* DeckOfCards.swift */,
 				B61E9E4F210DF47900F4F53F /* GameOfSet.swift */,
 				B61E9E51210DF52700F4F53F /* Grid.swift */,
-				B61E9E3D210DEB0800F4F53F /* Assets.xcassets */,
-				B61E9E42210DEB0800F4F53F /* Info.plist */,
 				B605FEFC2172A992001306E8 /* RoundedButton.swift */,
 				B6C3C92D21DBCD650015827C /* RoundedLabel.swift */,
 				B6C3C92F21DBE2DF0015827C /* DiscardBehavior.swift */,
+				B61E9E3D210DEB0800F4F53F /* Assets.xcassets */,
+				B61E9E42210DEB0800F4F53F /* Info.plist */,
 			);
 			path = GameOfSet2;
 			sourceTree = "<group>";
