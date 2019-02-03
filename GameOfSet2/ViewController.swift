@@ -12,11 +12,10 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: VCLLoggingViewController {
 
     private var game = GameOfSet() // initialize instance of model which contains game logic
     private var cardViewList = [SetCardView]() // initialize array of views that represents the views shown on screen
-    private var observer: NSKeyValueObservation?
     private var discardTimer: Timer?
     
     lazy var discardAnimator = UIDynamicAnimator(referenceView: view)
@@ -43,9 +42,11 @@ class ViewController: UIViewController {
         dealCards()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        // cleanup observer when view is about to disappear
-        observer?.invalidate()
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        self.grid.cellCount = self.game.cardsInPlayCount
+        self.grid.frame = CardPlayArea.bounds
+        updateViews()
     }
     
     // sets up the game when first loaded
@@ -63,15 +64,6 @@ class ViewController: UIViewController {
         scoreLabel.layer.borderColor = UIColor.black.cgColor
         dealCardsButton.isEnabled = false
         dealCardsButton.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
-        
-        
-        // set observer to watch the bounds of the CardPlayArea, so that if the bounds change when device is rotated
-        // then the screen layout is reset, including grid and views.
-        observer = CardPlayArea.layer.observe(\.bounds) { object, _ in
-            self.grid.cellCount = self.game.cardsInPlayCount
-            self.grid.frame = object.bounds
-            self.updateViews()
-        }
     }
     
     func startNewGame() {
@@ -86,13 +78,12 @@ class ViewController: UIViewController {
     func updateViews() {
         
         // function is called each time a change to the cards needs to be made, including size, border, location of cards
-        
         for index in 0..<cardViewList.count {
             
             // change(set) the position and card data of each view on cardViewList
             cardViewList[index].setCard(frame: grid[index]!, card: game.cardsInPlay[index])
         }
-    
+        
         scoreLabel.text = "Score: \(game.score)" // update the score displayed on the screen based on game score property
     }
     

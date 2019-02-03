@@ -238,7 +238,6 @@ class SetCardView: UIView {
     // set the card that is associated with the view and to update the view based on changes in the viewcontroller
     func setCard(frame: CGRect, card: Card){
         currentCard = card
-        
         // check if the location and/or size have changed from current, if so animate to the new size/location
         if self.cardFrame != frame {
             UIViewPropertyAnimator.runningPropertyAnimator(
@@ -247,6 +246,7 @@ class SetCardView: UIView {
                 options: [.layoutSubviews],
                 animations: { self.frame = frame },
                 completion: nil )
+            self.cardFrame = frame
         }
         superview!.sendSubviewToBack(self) // moves to the back layer so that anhy cards that are dealt or discarded will be on top
         updateCard()

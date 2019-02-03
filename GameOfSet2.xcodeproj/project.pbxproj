@@ -18,6 +18,11 @@
 		B61E9E4E210DF44D00F4F53F /* DeckOfCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61E9E4D210DF44D00F4F53F /* DeckOfCards.swift */; };
 		B61E9E50210DF47900F4F53F /* GameOfSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61E9E4F210DF47900F4F53F /* GameOfSet.swift */; };
 		B61E9E52210DF52700F4F53F /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61E9E51210DF52700F4F53F /* Grid.swift */; };
+		B67B1A2D2205F33F002374D7 /* ConcentrationCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67B1A292205F33E002374D7 /* ConcentrationCard.swift */; };
+		B67B1A2E2205F33F002374D7 /* ConcentrationThemeChooserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67B1A2A2205F33E002374D7 /* ConcentrationThemeChooserViewController.swift */; };
+		B67B1A2F2205F33F002374D7 /* ConcentrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67B1A2B2205F33F002374D7 /* ConcentrationViewController.swift */; };
+		B67B1A302205F33F002374D7 /* Concentration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67B1A2C2205F33F002374D7 /* Concentration.swift */; };
+		B67B1A32220736B4002374D7 /* VCLLoggingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67B1A31220736B3002374D7 /* VCLLoggingViewController.swift */; };
 		B6C3C92E21DBCD650015827C /* RoundedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C3C92D21DBCD650015827C /* RoundedLabel.swift */; };
 		B6C3C93021DBE2DF0015827C /* DiscardBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C3C92F21DBE2DF0015827C /* DiscardBehavior.swift */; };
 /* End PBXBuildFile section */
@@ -36,6 +41,11 @@
 		B61E9E4D210DF44D00F4F53F /* DeckOfCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckOfCards.swift; sourceTree = "<group>"; };
 		B61E9E4F210DF47900F4F53F /* GameOfSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOfSet.swift; sourceTree = "<group>"; };
 		B61E9E51210DF52700F4F53F /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
+		B67B1A292205F33E002374D7 /* ConcentrationCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcentrationCard.swift; sourceTree = "<group>"; };
+		B67B1A2A2205F33E002374D7 /* ConcentrationThemeChooserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcentrationThemeChooserViewController.swift; sourceTree = "<group>"; };
+		B67B1A2B2205F33F002374D7 /* ConcentrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcentrationViewController.swift; sourceTree = "<group>"; };
+		B67B1A2C2205F33F002374D7 /* Concentration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Concentration.swift; sourceTree = "<group>"; };
+		B67B1A31220736B3002374D7 /* VCLLoggingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCLLoggingViewController.swift; sourceTree = "<group>"; };
 		B6C3C92D21DBCD650015827C /* RoundedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedLabel.swift; sourceTree = "<group>"; };
 		B6C3C92F21DBE2DF0015827C /* DiscardBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardBehavior.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -70,6 +80,11 @@
 		B61E9E35210DEB0700F4F53F /* GameOfSet2 */ = {
 			isa = PBXGroup;
 			children = (
+				B67B1A31220736B3002374D7 /* VCLLoggingViewController.swift */,
+				B67B1A2C2205F33F002374D7 /* Concentration.swift */,
+				B67B1A292205F33E002374D7 /* ConcentrationCard.swift */,
+				B67B1A2A2205F33E002374D7 /* ConcentrationThemeChooserViewController.swift */,
+				B67B1A2B2205F33F002374D7 /* ConcentrationViewController.swift */,
 				B61E9E48210DEB2000F4F53F /* SupportingFiles */,
 				B61E9E38210DEB0700F4F53F /* ViewController.swift */,
 				B61E9E3A210DEB0700F4F53F /* Main.storyboard */,
@@ -169,8 +184,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				B61E9E4E210DF44D00F4F53F /* DeckOfCards.swift in Sources */,
+				B67B1A302205F33F002374D7 /* Concentration.swift in Sources */,
 				B61E9E39210DEB0700F4F53F /* ViewController.swift in Sources */,
+				B67B1A32220736B4002374D7 /* VCLLoggingViewController.swift in Sources */,
+				B67B1A2F2205F33F002374D7 /* ConcentrationViewController.swift in Sources */,
+				B67B1A2D2205F33F002374D7 /* ConcentrationCard.swift in Sources */,
 				B6C3C92E21DBCD650015827C /* RoundedLabel.swift in Sources */,
+				B67B1A2E2205F33F002374D7 /* ConcentrationThemeChooserViewController.swift in Sources */,
 				B61E9E4A210DED3000F4F53F /* SetCardView.swift in Sources */,
 				B605FEFD2172A992001306E8 /* RoundedButton.swift in Sources */,
 				B61E9E37210DEB0700F4F53F /* AppDelegate.swift in Sources */,
